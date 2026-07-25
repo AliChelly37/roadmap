@@ -1,0 +1,45 @@
+prompts:
+  - "{{text}}"
+
+providers:
+  - id: http
+    config:
+      url: "http://localhost:8000/extract/"
+      method: "POST"
+      headers:
+        "Content-Type": "application/json"
+      body:
+        text: "{{text}}"
+        model: "llama3.2"
+
+tests:
+  # Cas de test 1 : Toutes les informations sont présentes
+  - vars:
+      text: "Je suis Sarah Dupont, ingénieure en IA à Paris, j'ai 32 ans."
+    assert:
+      - type: is-json
+      - type: contains
+        value: "Sarah Dupont"
+      - type: contains
+        value: "Paris"
+      - type: contains
+        value: "ingénieure en IA"
+
+  # Cas de test 2 : Informations partielles (certains champs doivent être à null)
+  - vars:
+      text: "Mon nom est Karim et je travaille comme médecin."
+    assert:
+      - type: is-json
+      - type: contains
+        value: "Karim"
+      - type: contains
+        value: "médecin"
+
+  # Cas de test 3 : Texte sans aucune information pertinente
+  - vars:
+      text: "Aujourd'hui, il fait beau et le ciel est bleu."
+    assert:
+      - type: is-json
+      # On s'attend à ce que le JSON ne contienne que des valeurs nulles
+      - type: not-contains
+        value: "beau"
