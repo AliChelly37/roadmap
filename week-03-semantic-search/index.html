@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Brain — Moteur de Recherche Sémantique</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-glass: rgba(17, 25, 40, 0.75);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-primary: #6366f1; /* Indigo */
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --gradient-accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* En-tête */
+        header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.05em;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Boîte de recherche principale (Glassmorphism) */
+        .search-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px var(--accent-glow);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-search {
+            padding: 0 2rem;
+            border-radius: 12px;
+            border: none;
+            background: var(--gradient-accent);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-search:active {
+            transform: translateY(0);
+        }
+
+        /* Paramètres avancés */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-form {
+                flex-direction: column;
+            }
+            .btn-search {
+                padding: 1rem;
+            }
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .setting-item label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .setting-select, .setting-slider-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .setting-select option {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .setting-slider {
+            flex-grow: 1;
+            accent-color: var(--accent-primary);
+        }
+
+        .slider-value {
+            font-weight: 600;
+            min-width: 20px;
+        }
+
+        /* Résultats de recherche */
+        .results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            padding: 0 0.5rem;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .source-file {
+            font-weight: 600;
+            color: #818cf8;
+            font-size: 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .source-file:hover {
+            text-decoration: underline;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-score {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+        }
+
+        .card-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #e5e7eb;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        /* Animation d'apparition */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loader */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Second Brain Semantic Search</h1>
+            <p>Moteur de recherche sémantique local alimenté par ChromaDB & E5-Multilingual</p>
+        </header>
+
+        <!-- Formulaire de recherche -->
+        <div class="search-card">
+            <div class="search-form">
+                <div class="search-input-wrapper">
+                    <input type="text" id="queryInput" class="search-input" placeholder="Posez une question à vos notes (ex: 'Qu'est-ce qu'un index HNSW ?')..." autofocus>
+                </div>
+                <button id="searchBtn" class="btn-search">Rechercher</button>
+            </div>
+
+            <div class="settings-grid">
+                <!-- Choix du modèle -->
+                <div class="setting-item">
+                    <label for="modelSelect">Modèle d'embedding</label>
+                    <select id="modelSelect" class="setting-select">
+                        <option value="multilingual" selected>🌍 E5-Multilingual (Haut de gamme - FR/EN)</option>
+                        <option value="english">🇬🇧 MiniLM-L6 (Léger - Anglais)</option>
+                    </select>
+                </div>
+
+                <!-- Slider pour K résultats -->
+                <div class="setting-item">
+                    <label for="limitSlider">Nombre de résultats (K)</label>
+                    <div class="slider-wrapper">
+                        <input type="range" id="limitSlider" class="setting-slider" min="1" max="10" value="3">
+                        <span id="sliderVal" class="slider-value">3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Résultats -->
+        <div id="resultsInfo" class="results-info" style="display: none;">
+            <span id="resultsCount">0 résultat trouvé</span>
+            <span id="searchDuration">Recherche effectuée en 0ms</span>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
+            <p style="color: var(--text-secondary);">Calcul de l'embedding de votre requête...</p>
+        </div>
+
+        <!-- Zone des cartes de résultats -->
+        <div id="resultsList" class="results-list"></div>
+    </div>
+
+    <script>
+        const queryInput = document.getElementById("queryInput");
+        const searchBtn = document.getElementById("searchBtn");
+        const modelSelect = document.getElementById("modelSelect");
+        const limitSlider = document.getElementById("limitSlider");
+        const sliderVal = document.getElementById("sliderVal");
+        const resultsInfo = document.getElementById("resultsInfo");
+        const resultsCount = document.getElementById("resultsCount");
+        const searchDuration = document.getElementById("searchDuration");
+        const resultsList = document.getElementById("resultsList");
+        const loader = document.getElementById("loader");
+
+        // Mettre à jour l'affichage de K
+        limitSlider.addEventListener("input", (e) => {
+            sliderVal.textContent = e.target.value;
+        });
+
+        // Trigger sur la touche Entrée
+        queryInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                triggerSearch();
+            }
+        });
+
+        searchBtn.addEventListener("click", triggerSearch);
+
+        async function triggerSearch() {
+            const query = queryInput.value.trim();
+            if (!query) return;
+
+            // Afficher le loader
+            resultsList.innerHTML = "";
+            resultsInfo.style.display = "none";
+            loader.style.display = "block";
+
+            const model = modelSelect.value;
+            const limit = limitSlider.value;
+
+            const startTime = performance.now();
+
+            try {
+                const response = await fetch(`/search?q=${encodeURIComponent(query)}&model=${model}&limit=${limit}`);
+                const data = await response.json();
+                
+                const endTime = performance.now();
+                const duration = Math.round(endTime - startTime);
+
+                loader.style.display = "none";
+                resultsInfo.style.display = "flex";
+                resultsCount.textContent = `${data.results_count} résultat${data.results_count > 1 ? 's' : ''} trouvé${data.results_count > 1 ? 's' : ''}`;
+                searchDuration.textContent = `Recherche effectuée en ${duration} ms`;
+
+                if (data.results.length === 0) {
+                    resultsList.innerHTML = `
+                        <div class="result-card" style="text-align: center; color: var(--text-secondary); padding: 3rem;">
+                            <p style="font-size: 1.2rem;">🤷 Aucun passage correspondant trouvé.</p>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Essayez d'autres mots clés ou changez de modèle.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.results.forEach((result, idx) => {
+                    const card = document.createElement("div");
+                    card.className = "result-card";
+                    card.style.animationDelay = `${idx * 0.1}s`;
+
+                    // Formatage du score/distance sémantique selon le modèle
+                    // Pour le modèle E5 (Cosine distance L2), un score proche de 0 est meilleur
+                    const scoreLabel = model === "multilingual" ? "Dist L2" : "Dist L2";
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <a href="#" class="source-file">
+                                📂 ${result.source}
+                            </a>
+                            <div class="badges">
+                                <span class="badge">Morceau #${result.chunk_idx}</span>
+                                <span class="badge badge-score">${scoreLabel}: ${result.score}</span>
+                            </div>
+                        </div>
+                        <pre class="card-content">${escapeHTML(result.text)}</pre>
+                    `;
+                    resultsList.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                loader.style.display = "none";
+                resultsList.innerHTML = `
+                    <div class="result-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.05);">
+                        <p style="color: #fca5a5; font-weight: 600;">❌ Erreur réseau lors de la recherche.</p>
+                        <p style="color: #fca5a5; font-size: 0.9rem; margin-top: 0.5rem;">Assurez-vous que le serveur FastAPI est démarré.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Éviter les failles XSS dans le code
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
