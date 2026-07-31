@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with your Docs — RAG Engine</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary-glow: #6366f1;
+            --secondary-glow: #a855f7;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
+        }
+
+        header {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 20px 20px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        main {
+            width: 100%;
+            max-width: 900px;
+            padding: 0 20px 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(99, 102, 241, 0.05);
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .range-container label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 120px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-glow);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--primary-glow);
+            transition: transform 0.1s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            gap: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            color: var(--text-main);
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+        }
+
+        button {
+            padding: 0 25px;
+            background: linear-gradient(135deg, var(--primary-glow) 0%, var(--secondary-glow) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Réponse Box */
+        .response-container {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .response-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #a5b4fc;
+        }
+
+        .response-text {
+            line-height: 1.7;
+            font-size: 1.05rem;
+            white-space: pre-wrap;
+            color: #e5e7eb;
+        }
+
+        /* Clignotement du curseur de stream */
+        .streaming::after {
+            content: " ▌";
+            animation: blink 0.8s infinite;
+            color: var(--primary-glow);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Sources Section */
+        .sources-section {
+            margin-top: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .sources-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sources-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media(min-width: 600px) {
+            .sources-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .source-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .source-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+
+        .source-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .source-badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .source-distance {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .source-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chat with your Docs</h1>
+        <p>RAG local & ancré avec citations de sources et pages</p>
+    </header>
+
+    <main>
+        <!-- Formulaire de requête -->
+        <section class="glass-card">
+            <div class="input-group">
+                <textarea id="query-input" placeholder="Posez une question sur vos documents (ex: Qu'est-ce que le protocole Raft ?)..." rows="2"></textarea>
+                <button id="submit-btn" onclick="submitQuery()">Rechercher</button>
+            </div>
+            
+            <div class="settings-row">
+                <div class="range-container">
+                    <label for="k-slider">Nombre de sources (K) :</label>
+                    <input type="range" id="k-slider" min="1" max="5" value="3" oninput="document.getElementById('k-val').innerText = this.value">
+                    <span id="k-val" style="font-size: 0.95rem; font-weight: 600; color: var(--primary-glow)">3</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted)">
+                    Modèle LLM : <span style="color: #c084fc">Gemini 3.5 Flash</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Réponse générée -->
+        <section class="glass-card response-container" id="response-container">
+            <div class="response-header">
+                <span>Reponse de l'Assistant :</span>
+            </div>
+            <div class="response-text" id="response-text"></div>
+        </section>
+
+        <!-- Morceaux de contexte sources -->
+        <section class="sources-section" id="sources-section">
+            <div class="sources-title">Documents de référence consultés</div>
+            <div class="sources-grid" id="sources-grid"></div>
+        </section>
+    </main>
+
+    <script>
+        async function submitQuery() {
+            const queryInput = document.getElementById("query-input");
+            const submitBtn = document.getElementById("submit-btn");
+            const responseContainer = document.getElementById("response-container");
+            const responseText = document.getElementById("response-text");
+            const sourcesSection = document.getElementById("sources-section");
+            const sourcesGrid = document.getElementById("sources-grid");
+
+            const question = queryInput.value.trim();
+            if (!question) return;
+
+            // Bloquer le bouton et réinitialiser l'UI
+            queryInput.disabled = true;
+            submitBtn.disabled = true;
+            responseText.innerText = "";
+            responseText.classList.add("streaming");
+            responseContainer.style.display = "block";
+            sourcesSection.style.display = "none";
+            sourcesGrid.innerHTML = "";
+
+            const kValue = document.getElementById("k-slider").value;
+
+            // 1. Lancer l'affichage des sources en parallèle
+            fetch(`/sources?question=${encodeURIComponent(question)}&k=${kValue}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sources && data.sources.length > 0) {
+                        data.sources.forEach((src, idx) => {
+                            const card = document.createElement("div");
+                            card.className = "source-card";
+                            card.innerHTML = `
+                                <div class="source-meta">
+                                    <span class="source-badge">${src.source} · Page ${src.page}</span>
+                                    <span class="source-distance">Distance : ${src.distance.toFixed(4)}</span>
+                                </div>
+                                <div class="source-text">${src.text}</div>
+                            `;
+                            sourcesGrid.appendChild(card);
+                        });
+                        sourcesSection.style.display = "block";
+                    }
+                });
+
+            // 2. Lancer la requête RAG en streaming
+            try {
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        k: parseInt(kValue)
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Une erreur s'est produite lors de l'appel de l'API.");
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let done = false;
+
+                while (!done) {
+                    const { value, done: readerDone } = await reader.read();
+                    done = readerDone;
+                    if (value) {
+                        const chunk = decoder.decode(value, { stream: true });
+                        responseText.innerText += chunk;
+                    }
+                }
+            } catch (err) {
+                responseText.innerText = `Erreur : ${err.message}`;
+            } finally {
+                responseText.classList.remove("streaming");
+                queryInput.disabled = false;
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
