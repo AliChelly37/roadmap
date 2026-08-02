@@ -1,0 +1,162 @@
+[
+  {
+    "question": "Qu'est-ce qu'un système multi-agents (SMA) ?",
+    "contexts": [
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Performances et Latence Réseau\nPage 3 — Évaluation et Limites Physiques\nL'efficacité globale d'un système multi-agents dépend fortement de l'infrastructure de\ncommunication. La latence réseau, qui est le retard accumulé lors de la transmission des\ndonnées, joue un rôle déterminant.\nPour évaluer les performances d'un SMA, nous mesurons plusieurs métriques clés : 1. Le\ntemps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une"
+    ],
+    "answer": "Un système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui interagissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait pas résoudre facilement [document_test.pdf, Page 1]. Ces agents peuvent être des logiciels informatiques, des robots ou même des humains [document_test.pdf, Page 1].",
+    "ground_truth": "Un système composé de plusieurs agents autonomes (logiciels, robots ou humains) qui interagissent pour résoudre des problèmes complexes qu'un seul agent ne pourrait pas résoudre facilement."
+  },
+  {
+    "question": "Quels types d'entités peuvent composer les agents d'un SMA ?",
+    "contexts": [
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "Performances et Latence Réseau\nPage 3 — Évaluation et Limites Physiques\nL'efficacité globale d'un système multi-agents dépend fortement de l'infrastructure de\ncommunication. La latence réseau, qui est le retard accumulé lors de la transmission des\ndonnées, joue un rôle déterminant.\nPour évaluer les performances d'un SMA, nous mesurons plusieurs métriques clés : 1. Le\ntemps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une"
+    ],
+    "answer": "Les agents d'un SMA peuvent être des logiciels informatiques, des robots ou même des humains [document_test.pdf, Page 1].",
+    "ground_truth": "Les agents autonomes d'un SMA peuvent être des logiciels informatiques, des robots ou même des humains."
+  },
+  {
+    "question": "Quelles sont les quatre propriétés principales d'un agent autonome ?",
+    "contexts": [
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Les quatre propriétés principales d'un agent autonome sont :\n\n1. **L'autonomie** (capacité de prendre des décisions) [document_test.pdf, Page 1] ;\n2. **La réactivité** (réagir aux changements de son environnement) [document_test.pdf, Page 1] ;\n3. **La proactivité** (prendre l'initiative) [document_test.pdf, Page 1] ;\n4. **La sociabilité** (communiquer et coopérer avec les autres agents) [document_test.pdf, Page 1].",
+    "ground_truth": "L'autonomie, la réactivité, la proactivité et la sociabilité."
+  },
+  {
+    "question": "Comment définit-on l'autonomie d'un agent ?",
+    "contexts": [
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "L'autonomie d'un agent est définie comme la capacité de prendre des décisions [document_test.pdf, Page 1].",
+    "ground_truth": "L'autonomie est la capacité d'un agent autonome à prendre des décisions."
+  },
+  {
+    "question": "Qu'est-ce que la réactivité chez un agent autonome ?",
+    "contexts": [
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "La réactivité chez un agent autonome est la capacité de réagir aux changements de son environnement [document_test.pdf, Page 1].",
+    "ground_truth": "La réactivité désigne la capacité à réagir aux changements de son environnement."
+  },
+  {
+    "question": "Définissez la proactivité pour un agent autonome.",
+    "contexts": [
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Pour un agent autonome, la proactivité est définie comme la capacité de prendre l'initiative [document_test.pdf, Page 1].",
+    "ground_truth": "La proactivité est la capacité d'un agent à prendre l'initiative d'actions."
+  },
+  {
+    "question": "En quoi consiste la sociabilité d'un agent autonome ?",
+    "contexts": [
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "La sociabilité consiste à communiquer et à coopérer avec les autres agents du système."
+  },
+  {
+    "question": "Quels sont les deux types d'interactions possibles au sein d'un SMA ?",
+    "contexts": [
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Systèmes Multi-Agents (SMA)\nPage 1 — Introduction et Concepts Clés\nUn système multi-agents (SMA) est un système composé de plusieurs agents autonomes qui\ninteragissent entre eux pour résoudre des problèmes complexes qu'un seul agent ne pourrait\npas résoudre facilement. Ces agents peuvent être des logiciels informatiques, des robots ou\nmême des humains.\nLes propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des",
+      "Performances et Latence Réseau\nPage 3 — Évaluation et Limites Physiques\nL'efficacité globale d'un système multi-agents dépend fortement de l'infrastructure de\ncommunication. La latence réseau, qui est le retard accumulé lors de la transmission des\ndonnées, joue un rôle déterminant.\nPour évaluer les performances d'un SMA, nous mesurons plusieurs métriques clés : 1. Le\ntemps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une"
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "Les interactions au sein d'un SMA peuvent être coopératives (but commun) ou compétitives (intérêts conflictuels)."
+  },
+  {
+    "question": "Donnez un exemple classique d'interaction compétitive entre agents.",
+    "contexts": [
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents.",
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "Protocoles de Consensus\nPage 2 — Paxos, Raft et Accord Distribué\nDans les systèmes distribués et multi-agents, le consensus est une exigence critique. Les\nagents doivent s'accorder sur un état commun ou une valeur partagée en présence de\npannes.\nLe protocole Raft est une alternative moderne à Paxos, conçue pour être plus facile à\ncomprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du"
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "Les enchères constituent un exemple classique d'interaction compétitive."
+  },
+  {
+    "question": "Pourquoi le consensus est-il une exigence critique ?",
+    "contexts": [
+      "Protocoles de Consensus\nPage 2 — Paxos, Raft et Accord Distribué\nDans les systèmes distribués et multi-agents, le consensus est une exigence critique. Les\nagents doivent s'accorder sur un état commun ou une valeur partagée en présence de\npannes.\nLe protocole Raft est une alternative moderne à Paxos, conçue pour être plus facile à\ncomprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du",
+      "comprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du\nleader, la réplication des logs et la sécurité. À tout moment, chaque agent (nœud) se trouve\ndans l'un de ces trois états : leader, suiveur (follower) ou candidat. Le leader gère toutes les\ndemandes des clients et coordonne la duplication des journaux système.",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "Les agents doivent s'accorder sur un état commun ou une valeur partagée en présence de pannes de réseaux ou d'agents."
+  },
+  {
+    "question": "Quelle est la principale différence de conception entre Paxos et Raft ?",
+    "contexts": [
+      "Protocoles de Consensus\nPage 2 — Paxos, Raft et Accord Distribué\nDans les systèmes distribués et multi-agents, le consensus est une exigence critique. Les\nagents doivent s'accorder sur un état commun ou une valeur partagée en présence de\npannes.\nLe protocole Raft est une alternative moderne à Paxos, conçue pour être plus facile à\ncomprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du",
+      "comprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du\nleader, la réplication des logs et la sécurité. À tout moment, chaque agent (nœud) se trouve\ndans l'un de ces trois états : leader, suiveur (follower) ou candidat. Le leader gère toutes les\ndemandes des clients et coordonne la duplication des journaux système.",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "Le protocole Raft est une alternative moderne conçue spécifiquement pour être plus facile à comprendre que Paxos."
+  },
+  {
+    "question": "Quels sont les trois sous-problèmes du consensus définis par Raft ?",
+    "contexts": [
+      "comprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du\nleader, la réplication des logs et la sécurité. À tout moment, chaque agent (nœud) se trouve\ndans l'un de ces trois états : leader, suiveur (follower) ou candidat. Le leader gère toutes les\ndemandes des clients et coordonne la duplication des journaux système.",
+      "Protocoles de Consensus\nPage 2 — Paxos, Raft et Accord Distribué\nDans les systèmes distribués et multi-agents, le consensus est une exigence critique. Les\nagents doivent s'accorder sur un état commun ou une valeur partagée en présence de\npannes.\nLe protocole Raft est une alternative moderne à Paxos, conçue pour être plus facile à\ncomprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "Raft décompose le consensus en trois sous-problèmes : l'élection du leader, la réplication des logs (journaux) et la sécurité."
+  },
+  {
+    "question": "Quels sont les trois états possibles d'un agent dans le protocole Raft ?",
+    "contexts": [
+      "comprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du\nleader, la réplication des logs et la sécurité. À tout moment, chaque agent (nœud) se trouve\ndans l'un de ces trois états : leader, suiveur (follower) ou candidat. Le leader gère toutes les\ndemandes des clients et coordonne la duplication des journaux système.",
+      "Protocoles de Consensus\nPage 2 — Paxos, Raft et Accord Distribué\nDans les systèmes distribués et multi-agents, le consensus est une exigence critique. Les\nagents doivent s'accorder sur un état commun ou une valeur partagée en présence de\npannes.\nLe protocole Raft est une alternative moderne à Paxos, conçue pour être plus facile à\ncomprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "À tout moment, chaque nœud se trouve dans l'un des trois états suivants : leader, suiveur (follower) ou candidat."
+  },
+  {
+    "question": "Quel est le rôle du leader dans le protocole Raft ?",
+    "contexts": [
+      "comprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du\nleader, la réplication des logs et la sécurité. À tout moment, chaque agent (nœud) se trouve\ndans l'un de ces trois états : leader, suiveur (follower) ou candidat. Le leader gère toutes les\ndemandes des clients et coordonne la duplication des journaux système.",
+      "Protocoles de Consensus\nPage 2 — Paxos, Raft et Accord Distribué\nDans les systèmes distribués et multi-agents, le consensus est une exigence critique. Les\nagents doivent s'accorder sur un état commun ou une valeur partagée en présence de\npannes.\nLe protocole Raft est une alternative moderne à Paxos, conçue pour être plus facile à\ncomprendre. Raft décompose le consensus en trois sous-problèmes principaux : l'élection du",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "Le leader gère toutes les demandes des clients et coordonne la duplication des journaux système."
+  },
+  {
+    "question": "Quelles sont les trois métriques clés mesurées pour évaluer les performances d'un SMA ?",
+    "contexts": [
+      "Performances et Latence Réseau\nPage 3 — Évaluation et Limites Physiques\nL'efficacité globale d'un système multi-agents dépend fortement de l'infrastructure de\ncommunication. La latence réseau, qui est le retard accumulé lors de la transmission des\ndonnées, joue un rôle déterminant.\nPour évaluer les performances d'un SMA, nous mesurons plusieurs métriques clés : 1. Le\ntemps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une",
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères).",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "1. Le temps de convergence (prise de décision collective), 2. La bande passante utilisée (volume de messages échangés), 3. La robustesse aux pannes (capacité à fonctionner si 30 % des agents s'arrêtent)."
+  },
+  {
+    "question": "Quel est l'impact d'une latence réseau élevée sur un SMA ?",
+    "contexts": [
+      "Performances et Latence Réseau\nPage 3 — Évaluation et Limites Physiques\nL'efficacité globale d'un système multi-agents dépend fortement de l'infrastructure de\ncommunication. La latence réseau, qui est le retard accumulé lors de la transmission des\ndonnées, joue un rôle déterminant.\nPour évaluer les performances d'un SMA, nous mesurons plusieurs métriques clés : 1. Le\ntemps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une",
+      "temps de convergence (le temps nécessaire pour que tous les agents s'accordent sur une\ndécision). 2. La bande passante utilisée (le volume total de messages échangés). 3. La\nrobustesse aux pannes d'agents (la capacité du système à continuer de fonctionner si 30%\ndes agents s'arrêtent brutalement).\nUne latence élevée ou des pertes de paquets sur le réseau peuvent paralyser la prise de\ndécision et entraîner des divergences d'état entre les agents.",
+      "Les propriétés principales d'un agent autonome incluent l'autonomie (capacité de prendre des\ndécisions), la réactivité (réagir aux changements de son environnement), la proactivité\n(prendre l'initiative) et la sociabilité (communiquer et coopérer avec les autres agents). Les\ninteractions au sein d'un SMA peuvent être coopératives (les agents travaillent ensemble vers\nun but commun) ou compétitives (les agents ont des intérêts conflictuels, comme dans les\nenchères)."
+    ],
+    "answer": "Erreur de génération.",
+    "ground_truth": "Une latence réseau élevée peut paralyser la prise de décision et entraîner des divergences d'état entre les agents."
+  }
+]

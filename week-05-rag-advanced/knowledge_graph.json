@@ -1,0 +1,117 @@
+[
+  {
+    "subject": "Systèmes Multi-Agents",
+    "relation": "est composé de",
+    "object": "agents autonomes"
+  },
+  {
+    "subject": "agents autonomes",
+    "relation": "peuvent être",
+    "object": "logiciels informatiques"
+  },
+  {
+    "subject": "agents autonomes",
+    "relation": "peuvent être",
+    "object": "robots"
+  },
+  {
+    "subject": "agents autonomes",
+    "relation": "peuvent être",
+    "object": "humains"
+  },
+  {
+    "subject": "agent autonome",
+    "relation": "a l'autonomie",
+    "object": "capacité de prendre des décisions"
+  },
+  {
+    "subject": "agent autonome",
+    "relation": "a la réactivité",
+    "object": "réagir aux changements de son environnement"
+  },
+  {
+    "subject": "SMA",
+    "relation": "peut avoir",
+    "object": "interactions"
+  },
+  {
+    "subject": "interactions",
+    "relation": "peuvent être",
+    "object": "coopératives"
+  },
+  {
+    "subject": "interactions",
+    "relation": "peuvent être",
+    "object": "compétitives"
+  },
+  {
+    "subject": "Systèmes distribués et multi-agents",
+    "relation": "ont besoin de",
+    "object": "consensus"
+  },
+  {
+    "subject": "Raft",
+    "relation": "est une alternative à",
+    "object": "Paxos"
+  },
+  {
+    "subject": "le leader",
+    "relation": "gère toutes les opérations",
+    "object": "les agents"
+  },
+  {
+    "subject": "Raft",
+    "relation": "décompose le consensus en trois sous-problèmes principaux",
+    "object": "l'élection du leader, la réplication des logs et la sécurité"
+  },
+  {
+    "subject": "leader",
+    "relation": "gère",
+    "object": "demandes des clients"
+  },
+  {
+    "subject": "leader",
+    "relation": "coordonne",
+    "object": "duplication des journaux système"
+  },
+  {
+    "subject": "infrastructure de communication",
+    "relation": "dépend",
+    "object": "efficacité globale d'un système multi-agents"
+  },
+  {
+    "subject": "latence réseau",
+    "relation": "joue un rôle déterminant",
+    "object": "performances d'un SMA"
+  },
+  {
+    "subject": "performances d'un SMA",
+    "relation": "sont mesurées",
+    "object": "métriques clés"
+  },
+  {
+    "subject": "SMA",
+    "relation": "mesurer",
+    "object": "temps de convergence"
+  },
+  {
+    "subject": "SMA",
+    "relation": "mesurer",
+    "object": "bande passante utilisée"
+  },
+  {
+    "subject": "SMA",
+    "relation": "mesurer",
+    "object": "robustesse aux pannes d'agents"
+  },
+  {
+    "subject": "latence élevée",
+    "relation": "paralyser",
+    "object": "prise de décision"
+  },
+  {
+    "subject": "pertes de paquets sur le réseau",
+    "relation": "entraîner",
+    "object": "divergences d'état entre les agents"
+  }
+]

@@ -17,7 +17,7 @@ load_dotenv()
 DB_PATH = "chroma_db"
 COLLECTION_NAME = "rag_document_test"
 MODEL_NAME = "intfloat/multilingual-e5-base"
-LLM_MODEL = "gemini-3.5-flash"
+LLM_MODEL = "gemini-3.1-flash-lite"
 SCORE_THRESHOLD = 0.22
 
 app = FastAPI(title="Chat with your Docs - RAG Engine")
