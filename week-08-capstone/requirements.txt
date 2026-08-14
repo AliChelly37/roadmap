@@ -17,6 +17,7 @@ chromadb
 google-generativeai
 sentence-transformers
 beautifulsoup4
+rank_bm25          # recherche hybride BM25 + dense (RRF), brique de la Semaine 5
 
 # Observability
 langfuse

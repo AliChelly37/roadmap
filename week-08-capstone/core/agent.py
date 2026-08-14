@@ -10,18 +10,38 @@ from langgraph.prebuilt import ToolNode
 from langgraph.checkpoint.memory import MemorySaver
 
 # Nos modules internes
-from core.rag import search_roadmap
+from core.rag import search_roadmap, DEFAULT_N_RESULTS
 from core.observability import observe
 from core.llm_gateway import get_llm_response
 
 class AgentState(TypedDict):
     messages: Annotated[List[AIMessage | HumanMessage | SystemMessage | ToolMessage], add_messages]
 
+SYSTEM_PROMPT = (
+    "Tu es l'AI Roadmap Assistant. Tu réponds aux questions sur la formation "
+    "AI Engineering en 8 semaines : fondations LLM, prompt engineering, embeddings, "
+    "RAG de base puis avancé, agents, LLMOps et capstone.\n"
+    "Règles :\n"
+    "1. Utilise TOUJOURS l'outil search_local_docs avant de répondre.\n"
+    "2. Interroge-le avec des termes techniques précis (« reranking cross-encoder »), "
+    "jamais avec des méta-mots comme « semaine 5 » ou « roadmap » qui ramènent la "
+    "table des matières.\n"
+    "3. Réponds uniquement à partir du contexte récupéré et cite le fichier source.\n"
+    "4. Si l'information est absente du contexte, dis-le franchement.\n"
+    "5. Réponds toujours en français."
+)
+
+
 @tool
 def search_local_docs(query: str) -> str:
-    """Recherche dans la documentation locale (AI Engineering Roadmap). Utilise ça pour répondre aux questions sur le RAG, les Agents, LLMOps, etc."""
+    """Recherche dans la roadmap AI Engineering (RAG, agents, LLMOps, embeddings...).
+
+    Formule la requête avec des termes techniques précis. Évite les méta-mots
+    (« semaine 5 », « roadmap », « formation ») : ils ramènent la table des
+    matières au lieu du contenu recherché.
+    """
     print(f"\n[OUTIL] Recherche RAG pour : '{query}'...")
-    return search_roadmap(query)
+    return search_roadmap(query, n_results=DEFAULT_N_RESULTS)
 
 tools = [search_local_docs]
 tool_node = ToolNode(tools)
@@ -75,12 +95,10 @@ graph = builder.compile(checkpointer=memory)
 @observe(name="agent_workflow") # Tracing Langfuse
 def run_agent(user_input: str, thread_id: str = "thread_1"):
     config = {"configurable": {"thread_id": thread_id}}
-    
-    system_prompt = "Tu es un AI Roadmap Assistant. Utilise l'outil search_local_docs pour trouver des informations sur les semaines 1 à 7 de la formation AI Engineering. Réponds toujours en français."
-    
+
     initial_state = {
         "messages": [
-            SystemMessage(content=system_prompt),
+            SystemMessage(content=SYSTEM_PROMPT),
             HumanMessage(content=user_input)
         ]
     }
