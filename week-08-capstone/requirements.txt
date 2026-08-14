@@ -14,7 +14,6 @@ langgraph
 
 # RAG
 chromadb
-sentence-transformers
 beautifulsoup4
 
 # Observability

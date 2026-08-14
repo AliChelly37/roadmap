@@ -9,13 +9,20 @@ DB_PATH = Path(__file__).resolve().parent.parent / "chroma_db"
 def get_collection():
     """Initialise et retourne la collection ChromaDB pour le RAG."""
     client = chromadb.PersistentClient(path=str(DB_PATH))
-    # Utilisation du modèle multilingual pour gérer le français
-    sbert_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="intfloat/multilingual-e5-base")
+    
+    # Pour éviter l'erreur "Out Of Memory" (OOM) sur le Free Tier de Render (limité à 512Mo),
+    # on utilise l'API Gemini pour les embeddings au lieu de charger un modèle PyTorch lourd en RAM.
+    from chromadb.utils.embedding_functions import GoogleGenerativeAiEmbeddingFunction
+    
+    gemini_ef = GoogleGenerativeAiEmbeddingFunction(
+        api_key=os.getenv("GEMINI_API_KEY"),
+        task_type="RETRIEVAL_DOCUMENT"
+    )
     
     # get_or_create_collection pour ne pas crasher si elle existe déjà
     collection = client.get_or_create_collection(
         name="roadmap_knowledge",
-        embedding_function=sbert_fn
+        embedding_function=gemini_ef
     )
     return collection
 
