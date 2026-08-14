@@ -15,6 +15,7 @@ langgraph
 # RAG
 chromadb
 google-generativeai
+sentence-transformers
 beautifulsoup4
 
 # Observability

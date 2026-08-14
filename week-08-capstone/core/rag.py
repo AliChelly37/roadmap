@@ -10,19 +10,16 @@ def get_collection():
     """Initialise et retourne la collection ChromaDB pour le RAG."""
     client = chromadb.PersistentClient(path=str(DB_PATH))
     
-    # Pour éviter l'erreur "Out Of Memory" (OOM) sur le Free Tier de Render (limité à 512Mo),
-    # on utilise l'API Gemini pour les embeddings au lieu de charger un modèle PyTorch lourd en RAM.
-    from chromadb.utils.embedding_functions import GoogleGenerativeAiEmbeddingFunction
+    from chromadb.utils import embedding_functions
     
-    gemini_ef = GoogleGenerativeAiEmbeddingFunction(
-        api_key=os.getenv("GEMINI_API_KEY"),
-        task_type="RETRIEVAL_DOCUMENT"
-    )
+    # On utilise un modèle très léger (90 Mo en RAM) au lieu de l'API Gemini (qui nous retourne une erreur 404)
+    # ou du modèle multilingual (qui faisait 1 Go et causait l'erreur OOM).
+    lightweight_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
     
     # get_or_create_collection pour ne pas crasher si elle existe déjà
     collection = client.get_or_create_collection(
         name="roadmap_knowledge",
-        embedding_function=gemini_ef
+        embedding_function=lightweight_ef
     )
     return collection
 
