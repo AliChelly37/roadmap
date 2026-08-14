@@ -31,7 +31,7 @@ PHASES = [
     ("Agents",         (6, 6), "#F08C00"),
     ("Production",     (7, 8), "#E03131"),
 ]
-ANNEXE_COLOR = "#868E96"
+TRANSVERSE_COLOR = "#868E96"
 
 WEEK_COLOR = {
     week: color
@@ -60,33 +60,34 @@ def _rail_html() -> str:
     return f'<div class="rail">{"".join(groups)}</div>'
 
 
-def _source_chips(weeks, used_annexes: bool) -> str:
+def _source_chips(weeks, used_transverse: bool) -> str:
     """Provenance réelle de la réponse, une pastille par semaine consultée.
 
     Styles en ligne volontairement : le markdown du chatbot est rendu hors de
     la portée de notre feuille CSS, donc on ne dépend pas d'elle.
     """
-    if not weeks and not used_annexes:
+    if not weeks and not used_transverse:
         return ""
 
-    # Le glossaire des annexes ressort sur presque toutes les requêtes : affiché
-    # systématiquement il ne porte aucune information, et il n'a pas de position
-    # sur le rail des semaines. On ne le montre donc que s'il a répondu seul.
+    # Les mémos transverses (Git, garde-fous, system design) n'ont pas de position
+    # sur le rail. Affichés à chaque fois ils ne porteraient aucune information :
+    # on ne les montre que s'ils ont répondu seuls.
     if weeks:
-        used_annexes = False
+        used_transverse = False
 
     base = ("display:inline-block;font-family:'IBM Plex Mono',ui-monospace,monospace;"
             "font-size:11px;font-weight:500;letter-spacing:.02em;padding:2px 8px;"
             "border-radius:999px;margin:0 4px 0 0;border:1px solid;")
     chips = "".join(
-        f'<span style="{base}color:{WEEK_COLOR.get(w, ANNEXE_COLOR)};'
-        f'border-color:{WEEK_COLOR.get(w, ANNEXE_COLOR)}33;'
-        f'background:{WEEK_COLOR.get(w, ANNEXE_COLOR)}0f">S{w}</span>'
+        f'<span style="{base}color:{WEEK_COLOR.get(w, TRANSVERSE_COLOR)};'
+        f'border-color:{WEEK_COLOR.get(w, TRANSVERSE_COLOR)}33;'
+        f'background:{WEEK_COLOR.get(w, TRANSVERSE_COLOR)}0f">S{w}</span>'
         for w in weeks
     )
-    if used_annexes:
-        chips += (f'<span style="{base}color:{ANNEXE_COLOR};'
-                  f'border-color:{ANNEXE_COLOR}33;background:{ANNEXE_COLOR}0f">Annexes</span>')
+    if used_transverse:
+        chips += (f'<span style="{base}color:{TRANSVERSE_COLOR};'
+                  f'border-color:{TRANSVERSE_COLOR}33;'
+                  f'background:{TRANSVERSE_COLOR}0f">Transverse</span>')
 
     return (
         '\n\n<div style="margin-top:14px;padding-top:10px;'
@@ -136,7 +137,7 @@ def chat_function(message, history, request: gr.Request):
     }
 
     full_response = ""
-    weeks, used_annexes = set(), False
+    weeks, used_transverse = set(), False
 
     try:
         for event in graph.stream(initial_state, config=config, stream_mode="updates"):
@@ -145,8 +146,8 @@ def chat_function(message, history, request: gr.Request):
                     # Le contenu de l'outil dit quelles semaines ont réellement
                     # servi : c'est ce qui alimente les pastilles de source.
                     tool_text = str(update["messages"][-1].content)
-                    weeks |= {int(w) for w in re.findall(r"semaine-(\d)", tool_text)}
-                    used_annexes = used_annexes or "annexes" in tool_text.lower()
+                    weeks |= {int(w) for w in re.findall(r"\[S(\d)\]", tool_text)}
+                    used_transverse = used_transverse or "[transverse]" in tool_text
                     yield "Consultation de la roadmap…"
 
                 elif node_name == "agent":
@@ -159,7 +160,7 @@ def chat_function(message, history, request: gr.Request):
             yield ("Je n'ai pas trouvé de quoi répondre. Reformule en visant une notion "
                    "précise de la formation — « reranking », « LangGraph », « chunking ».")
         else:
-            yield full_response + _source_chips(sorted(weeks), used_annexes)
+            yield full_response + _source_chips(sorted(weeks), used_transverse)
 
     except Exception as exc:
         # On n'expose pas la stack trace à l'utilisateur, mais on la log côté serveur.
@@ -314,7 +315,7 @@ with gr.Blocks(title="AI Roadmap Assistant",
                     "font-family:IBM Plex Sans,system-ui,sans-serif'>"
                     "<div style='font-family:Space Grotesk,system-ui;font-size:15px;"
                     "font-weight:600;color:#12141C;margin-bottom:6px'>"
-                    "Huit semaines, indexées.</div>"
+                    "Tes mémos, indexés.</div>"
                     "<div style='font-size:13px;line-height:1.6'>Demande une notion précise —&nbsp;"
                     "la réponse indiquera de quelle semaine elle vient.</div></div>"
                 ),

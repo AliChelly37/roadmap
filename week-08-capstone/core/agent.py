@@ -18,27 +18,29 @@ class AgentState(TypedDict):
     messages: Annotated[List[AIMessage | HumanMessage | SystemMessage | ToolMessage], add_messages]
 
 SYSTEM_PROMPT = (
-    "Tu es l'AI Roadmap Assistant. Tu réponds aux questions sur la formation "
-    "AI Engineering en 8 semaines : fondations LLM, prompt engineering, embeddings, "
-    "RAG de base puis avancé, agents, LLMOps et capstone.\n"
+    "Tu es l'AI Roadmap Assistant. Ta base de connaissances est constituée des "
+    "MÉMOS personnels rédigés par l'utilisateur pendant sa formation AI Engineering "
+    "de 8 semaines : fondations LLM, prompt engineering, embeddings, RAG de base "
+    "puis avancé, agents, LLMOps, capstone, plus quelques mémos transverses "
+    "(Git, garde-fous, system design).\n"
     "Règles :\n"
     "1. Utilise TOUJOURS l'outil search_local_docs avant de répondre.\n"
-    "2. Interroge-le avec des termes techniques précis (« reranking cross-encoder »), "
-    "jamais avec des méta-mots comme « semaine 5 » ou « roadmap » qui ramènent la "
-    "table des matières.\n"
-    "3. Réponds uniquement à partir du contexte récupéré et cite le fichier source.\n"
-    "4. Si l'information est absente du contexte, dis-le franchement.\n"
+    "2. Interroge-le avec des termes techniques précis (« cross-encoder reranking », "
+    "« HNSW »), pas avec des méta-mots comme « semaine 5 » ou « formation ».\n"
+    "3. Réponds uniquement à partir du contexte récupéré, et cite le mémo source.\n"
+    "4. Ce sont les notes de l'utilisateur : tu lui restitues ce que LUI a écrit. "
+    "Si l'information n'y est pas, dis-le franchement plutôt que de compléter avec "
+    "tes connaissances générales.\n"
     "5. Réponds toujours en français."
 )
 
 
 @tool
 def search_local_docs(query: str) -> str:
-    """Recherche dans la roadmap AI Engineering (RAG, agents, LLMOps, embeddings...).
+    """Recherche dans les mémos de la formation (RAG, agents, LLMOps, embeddings...).
 
     Formule la requête avec des termes techniques précis. Évite les méta-mots
-    (« semaine 5 », « roadmap », « formation ») : ils ramènent la table des
-    matières au lieu du contenu recherché.
+    (« semaine 5 », « formation ») : ils matchent large et noient le mémo visé.
     """
     print(f"\n[OUTIL] Recherche RAG pour : '{query}'...")
     return search_roadmap(query, n_results=DEFAULT_N_RESULTS)

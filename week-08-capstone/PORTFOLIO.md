@@ -1,13 +1,15 @@
 # AI Roadmap Assistant — writeup portfolio
 
 > Capstone de la formation AI Engineering (8 semaines). Assistant conversationnel
-> RAG interrogeant le corpus réel de la roadmap.
+> RAG interrogeant mes 30 mémos personnels de la formation.
 
 ## Le problème
 
-La roadmap fait 11 documents markdown répartis sur 8 semaines. Retrouver « ce que disait la semaine 5
-sur le reranking » demande de fouiller à la main. L'objectif : un assistant qui
-répond en français, uniquement à partir du corpus, en citant sa source.
+Pendant 8 semaines de formation, j'ai écrit 30 mémos — un par notion travaillée.
+C'est la trace de ce que j'ai réellement compris, mais retrouver « ce que j'avais
+noté sur le reranking » demande de fouiller à la main. L'objectif : un assistant qui
+interroge mes propres notes, répond en français uniquement à partir d'elles, et
+indique de quelle semaine vient chaque réponse.
 
 ## L'architecture
 
@@ -39,10 +41,10 @@ presque rien de pertinent. Quatre défauts distincts, trouvés en mesurant :
 
 | Défaut | Symptôme | Correctif |
 |---|---|---|
-| Corpus hors du contexte Docker | `ROADMAP_ROOT` remontait 4 niveaux, vers le vault Obsidian. 15 fichiers en local, **0 dans le conteneur** | Corpus vendu dans `knowledge/` |
+| Corpus hors du contexte Docker | `ROADMAP_ROOT` remontait 4 niveaux, vers le vault Obsidian. Des fichiers en local, **0 dans le conteneur** | Corpus vendu dans `knowledge/` |
 | Modèle anglophone sur corpus français | `all-MiniLM-L6-v2`, choisi pour tenir dans les 512 Mo de Render | Modèle multilingue (16 Go dispo sur HF Spaces) |
 | Contenu jeté au découpage | Titre et liste séparés d'un seul `\n` : `split("\n\n")` mettait les deux dans le même bloc, jeté avec le titre | Détection de titre ligne à ligne |
-| Poids RRF inadaptés | 0.6 dense / 0.4 sparse (réglés en S5 sur un corpus PDF) : le dense ramenait la table des matières pour toute question | 0.5 / 0.5 après balayage |
+| Poids RRF inadaptés | 0.6 dense / 0.4 sparse (réglés en S5 sur un corpus PDF) : sur des notes courtes le dense dérive vers les mémos voisins | 0.5 / 0.5 après balayage |
 
 **Recall@3 mesuré à chaque étape :**
 
@@ -57,7 +59,7 @@ presque rien de pertinent. Quatre défauts distincts, trouvés en mesurant :
 | + rééquilibrage RRF 0.5/0.5 | **100 %** |
 
 \* sur les questions « propres » uniquement. L'agent reformule en ajoutant des
-méta-mots (« reranking **semaine 5 roadmap** ») qui matchent la table des matières :
+méta-mots (« reranking cross-encoder **semaine 5 formation** ») qui matchent large :
 ajouter ces requêtes réalistes à l'éval a fait retomber le score à 83 % et révélé
 le défaut de pondération. **L'éval optimiste cachait un bug de production.**
 
@@ -69,7 +71,7 @@ le défaut de pondération. **L'éval optimiste cachait un bug de production.**
 - **Évaluer sur les requêtes réelles, pas sur les siennes.** Le gain le plus utile
   est venu de tester les reformulations de l'agent, pas mes questions bien écrites.
 - **Les hyperparamètres ne se transposent pas.** Les poids RRF réglés en S5 sur des
-  PDF étaient contre-productifs sur un corpus de curriculum.
+  PDF étaient contre-productifs sur un corpus de notes personnelles.
 - **Un garde-fou trop large est un bug.** Le filtre bloquait « system prompt » —
   soit le sujet même de la Semaine 2. Il faut cibler les tournures d'injection.
 
@@ -104,5 +106,6 @@ réponse ancrée citant les bons outils ; tentative d'injection → bloquée par
 
 - Pas de reranker cross-encoder dans le capstone (présent en S5) : coût mémoire
   sur le free tier CPU
-- Corpus figé à l'image : réindexer demande un rebuild
+- Corpus figé à l'image : ajouter un mémo demande un rebuild
+- Les mémos vivent aussi dans le vault Obsidian — les deux copies peuvent diverger
 - Modèle 8B — suffisant pour de la synthèse ancrée, limité en raisonnement multi-étapes

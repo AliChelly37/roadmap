@@ -43,6 +43,17 @@ def get_collection():
     return collection
 
 
+def week_from_filename(name: str):
+    """Numéro de semaine d'un mémo, ou None s'il est transverse.
+
+    Le corpus est constitué des mémos rédigés pendant la formation :
+    `S5-J2-Memo-Reranking.md` -> 5, `semaine-8.md` -> 8, et
+    `Memo-Guardrails.md` -> None (notion transverse, hors semaine).
+    """
+    match = re.match(r"^S(\d)\b", name) or re.match(r"^semaine-(\d)", name)
+    return int(match.group(1)) if match else None
+
+
 def _chunk_markdown(content: str, source: str):
     """Découpe un markdown en chunks porteurs de leur contexte.
 
@@ -127,6 +138,8 @@ def index_roadmap_files():
                     "source": md_file.name,
                     "heading": heading,
                     "chunk_id": p_id,
+                    # 0 = transverse : Chroma n'accepte pas None en métadonnée.
+                    "week": week_from_filename(md_file.name) or 0,
                 })
                 ids.append(f"doc_{doc_id}")
                 doc_id += 1
@@ -253,7 +266,10 @@ def search_roadmap(query: str, n_results: int = DEFAULT_N_RESULTS) -> str:
         meta = meta or {}
         source = meta.get("source", "Inconnue")
         heading = meta.get("heading", "")
-        label = f"{source} > {heading}" if heading else source
+        # Le tag de semaine est lu par l'UI pour ses pastilles de provenance.
+        week = meta.get("week") or 0
+        tag = f"[S{week}] " if week else "[transverse] "
+        label = f"{tag}{source} > {heading}" if heading else f"{tag}{source}"
         formatted_docs.append(f"Source: {label}\nContenu:\n{doc}")
 
     return "\n\n---\n\n".join(formatted_docs)

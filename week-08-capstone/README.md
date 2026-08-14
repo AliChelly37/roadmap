@@ -10,9 +10,10 @@ pinned: false
 
 # AI Roadmap Assistant — Capstone (Semaine 8)
 
-Projet de fin de la formation AI Engineering. Un agent conversationnel qui répond
-aux questions sur le programme des 8 semaines, en s'appuyant sur le corpus réel de
-la roadmap plutôt que sur ses connaissances propres.
+Projet de fin de la formation AI Engineering. Un agent conversationnel qui interroge
+**mes propres mémos** rédigés pendant les 8 semaines — pas le programme, mais les
+notes que j'ai réellement écrites en apprenant. Il répond depuis ce corpus, jamais
+depuis les connaissances générales du modèle.
 
 ## Architecture
 
@@ -26,8 +27,15 @@ la roadmap plutôt que sur ses connaissances propres.
 | Observabilité | Langfuse |
 | Déploiement | Docker → Hugging Face Spaces |
 
-Le corpus (`knowledge/`, 11 fichiers de la roadmap) est **indexé au build**, pas au
-démarrage : le conteneur démarre à froid sans réencoder quoi que ce soit.
+## Le corpus
+
+`knowledge/` contient **30 mémos** (371 chunks) : un par notion travaillée, nommés
+`S<semaine>-J<jour>-Memo-<sujet>.md`, plus quelques mémos transverses sans semaine
+(Git, garde-fous, system design). Chaque réponse affiche les semaines dont elle
+provient réellement.
+
+Le corpus est **indexé au build**, pas au démarrage : le conteneur démarre à froid
+sans réencoder quoi que ce soit.
 
 ## Recherche hybride
 
@@ -36,17 +44,19 @@ parce qu'un modèle de paraphrase encode mal les noms propres. BM25 les retrouve
 par correspondance lexicale exacte. Les deux classements sont fusionnés par
 Reciprocal Rank Fusion (`k=60`), la formule reprise du `query_hybrid.py` de la
 Semaine 5 — mais **rééquilibrée à 0.5 / 0.5**. Les poids d'origine (0.6 dense) avaient
-été réglés sur un corpus PDF ; ici le dense ramène la table des matières pour toute
-question contenant « semaine » ou « roadmap ». Un balayage montre un pic net à parts
+été réglés sur un corpus PDF ; sur des notes courtes et denses en termes techniques,
+le dense seul dérive vers les mémos voisins. Un balayage montre un pic net à parts
 égales (0.6/0.4 → 83 %, **0.5/0.5 → 100 %**, 0.4/0.6 → 92 %).
 
-Mesure sur le jeu d'éval (`test_retrieval.py`, 8 questions couvrant les 8 semaines) :
+Mesure sur le jeu d'éval (`test_retrieval.py`, 12 questions couvrant les 8 semaines) :
 
 | Pipeline | Recall@3 |
 |---|---|
+| Départ, dans un conteneur | 0 % — index vide |
 | Chunking naïf + modèle anglophone | 12 % |
 | Modèle multilingue + chunk headers contextuels | 75 % |
-| + hybride BM25/RRF + découpage ligne à ligne | **100 %** |
+| + hybride BM25/RRF + découpage ligne à ligne | 83 % |
+| + rééquilibrage RRF 0.5/0.5 | **100 %** |
 
 ## Lancer en local
 
@@ -69,7 +79,7 @@ passe sous 85 % — on préfère casser le build que déployer un assistant muet
 Sortie de build attendue :
 
 ```
-[7/9] RUN python -c "...index_roadmap_files()"   → 256 chunks indexés
+[7/9] RUN python -c "...index_roadmap_files()"   → 371 chunks indexés
 [8/9] RUN python test_retrieval.py               → Recall@5 (production) : 100% (12/12)
 ```
 
@@ -78,7 +88,7 @@ CPU : `sentence-transformers` tire `torch`, et la roue PyPI par défaut embarque
 la pile CUDA (`nvidia-cudnn`, `cublas`, `triton`…) — ~6 Go de bibliothèques GPU
 inutiles ici.
 
-Le conteneur démarre sans réindexer (`Base déjà indexée avec 256 documents`) : l'index
+Le conteneur démarre sans réindexer (`Base déjà indexée avec 371 documents`) : l'index
 est cuit dans l'image.
 
 ## Tests
@@ -88,8 +98,8 @@ python test_retrieval.py      # éval de retrieval, exit 1 si régression
 ```
 
 Le jeu d'éval contient volontairement les requêtes **reformulées par l'agent**
-(« reranking semaine 5 roadmap »), pas seulement des questions bien écrites : c'est
-cette version honnête qui a révélé le défaut de pondération RRF.
+(« reranking cross-encoder semaine 5 formation »), pas seulement des questions bien
+écrites : c'est cette version honnête qui a révélé le défaut de pondération RRF.
 
 ## Statut du déploiement
 

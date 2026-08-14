@@ -17,25 +17,28 @@ from core.rag import (
     DEFAULT_N_RESULTS,
 )
 
-# (question, fragment attendu dans le nom du fichier source)
+# (question, fragment attendu dans le nom du mémo source)
+#
+# Le corpus est constitué des mémos rédigés pendant la formation, pas du
+# programme : on évalue donc la capacité à retrouver SES propres notes.
 CASES = [
     # Questions telles que l'utilisateur les pose.
-    ("Qu'est-ce que LiteLLM ?", "07-semaine-7"),
-    ("Comment fonctionne le reranking ?", "05-semaine-5"),
-    ("Qu'est-ce qu'un embedding ?", "03-semaine-3"),
-    ("Comment parser un PDF pour du RAG ?", "04-semaine-4"),
-    ("C'est quoi LangGraph ?", "06-semaine-6"),
-    ("Comment fonctionne la tokenisation d'un LLM ?", "01-semaine-1-fondations-llm"),
-    ("Comment faire du prompt engineering avec du few-shot ?", "02-semaine-2-prompt"),
-    ("Comment déployer sur Hugging Face Spaces ?", "08-semaine-8"),
+    ("Qu'est-ce que LiteLLM et à quoi sert une gateway ?", "S7-Memo-LiteLLM-Gateway"),
+    ("Différence entre bi-encoder et cross-encoder ?", "S5-J2-Memo-Reranking"),
+    ("Comment calcule-t-on la similarité entre deux embeddings ?", "S3-J1-Memo-Embeddings"),
+    ("Quelles stratégies de chunking pour un RAG ?", "S4-J2-Memo-Chunking"),
+    ("Comment fonctionne un StateGraph LangGraph ?", "S6-J2-Memo-LangGraph"),
+    ("Qu'est-ce que la tokenisation d'un LLM ?", "S1-J1-Memo"),
+    ("Zero-shot, few-shot et chain of thought ?", "S2-J1-Memo-Prompt-Engineering"),
+    ("Comment tracer un LLM avec Langfuse ?", "S7-Memo-Observability-Langfuse"),
+    ("Qu'est-ce que HNSW ?", "S3-J2-Memo-Metrics-HNSW"),
+    ("Comment fonctionne une crew CrewAI multi-agents ?", "S6-J4-Memo-Multi-Agents-CrewAI"),
 
     # Requêtes telles que l'AGENT les reformule : il ajoute des méta-mots
-    # ("semaine", "roadmap", "formation") qui, eux, matchent surtout la table
-    # des matières. C'est le cas réel en production, il doit être couvert.
-    ("reranking semaine 5 AI Engineering Roadmap", "05-semaine-5"),
-    ("LangGraph agents semaine 6 formation", "06-semaine-6"),
-    ("observabilité Langfuse semaine 7 roadmap", "07-semaine-7"),
-    ("chunking RAG semaine 4 formation AI Engineering", "04-semaine-4"),
+    # ("semaine", "formation") qui matchent large. C'est le cas réel en
+    # production, il doit être couvert.
+    ("reranking cross-encoder semaine 5 formation", "S5-J2-Memo-Reranking"),
+    ("caching sémantique semaine 7 roadmap AI Engineering", "S7-Memo-Caching"),
 ]
 
 # Le pipeline atteint 100 % ; on garde une marge pour ne pas casser la CI sur
