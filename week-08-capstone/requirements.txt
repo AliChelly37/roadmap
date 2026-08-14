@@ -1,0 +1,28 @@
+# Core
+fastapi
+uvicorn
+
+# LLM & Gateway
+litellm
+langchain
+langchain-openai
+langchain-google-genai
+langchain-community
+
+# Agent & Orchestration
+langgraph
+
+# RAG
+chromadb
+sentence-transformers
+beautifulsoup4
+
+# Observability
+langfuse
+
+# UI
+gradio
+
+# Utils
+python-dotenv
+requests

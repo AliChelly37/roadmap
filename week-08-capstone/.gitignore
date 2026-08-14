@@ -1,0 +1,22 @@
+# Environnements virtuels
+.venv/
+venv/
+env/
+.env
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Bases de données locales
+chroma_db/
+*.sqlite3
+
+# Logs
+*.log
+
+# Autres
+.DS_Store
