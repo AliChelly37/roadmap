@@ -28,6 +28,23 @@ MAX_CHUNKS_PER_SOURCE = 2
 # pas en production.
 DEFAULT_N_RESULTS = 5
 
+# Garde « je ne sais pas » (brique de la Semaine 4, S4-J5-T1) : en dessous de ce
+# seuil de proximité, aucun passage n'est jugé pertinent et on refuse de répondre.
+#
+# Le seuil n'est pas choisi au jugé. Distances mesurées sur ce corpus :
+#   dans le corpus  : 0.32 -> 0.41
+#   hors du corpus  : 0.57 -> 0.80
+# 0.50 tombe dans l'écart, avec de la marge des deux côtés.
+RELEVANCE_THRESHOLD = float(os.environ.get("RELEVANCE_THRESHOLD", "0.50"))
+
+# Renvoyé à l'agent quand rien n'est pertinent. Le texte est explicite parce que
+# c'est un modèle 8B qui le lit : il doit être impossible à interpréter autrement.
+NO_RELEVANT_CONTENT = (
+    "AUCUN_PASSAGE_PERTINENT — la question ne correspond à aucun mémo de la "
+    "formation. Tu dois répondre que le sujet n'est pas couvert par les notes, "
+    "et NE PAS répondre depuis tes connaissances générales."
+)
+
 
 def get_collection():
     """Initialise et retourne la collection ChromaDB pour le RAG."""
@@ -228,6 +245,15 @@ def search_roadmap(query: str, n_results: int = DEFAULT_N_RESULTS) -> str:
         results.get("documents", [[]])[0],
         results.get("metadatas", [[]])[0],
     ))
+
+    # Garde de pertinence AVANT toute fusion : si le meilleur passage dense est
+    # trop loin, le corpus ne parle pas du sujet. Sans ça le modèle recevait des
+    # extraits hors sujet et répondait quand même depuis ses connaissances
+    # générales — il a répondu « Sydney » à la capitale de l'Australie, ce qui
+    # est en prime faux.
+    distances = (results.get("distances") or [[]])[0]
+    if not distances or min(distances) > RELEVANCE_THRESHOLD:
+        return NO_RELEVANT_CONTENT
 
     # B. Sparse (BM25) — rattrape les correspondances lexicales exactes.
     sparse = []
