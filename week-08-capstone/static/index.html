@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Roadmap Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ---------------------------------------------------------------------------
+   Neumorphisme : tout est extrudé d'un fond unique, via deux ombres opposées.
+   Il est réservé au CHROME (rail, composeur, boutons, pastilles). La surface
+   de lecture reste plate et très contrastée : embosser un paragraphe de
+   français le rend pénible à lire, et le neumorphisme pur tombe sous les
+   seuils WCAG (4.5:1 texte / 3:1 bordures).
+--------------------------------------------------------------------------- */
+:root{
+  --bg:#E8ECF3; --light:#FFFFFF; --dark:#C4CBD8;
+  --card:#FFFFFF; --ink:#161B2B; --ink-2:#59627A; --hair:#DEE3EC;
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  /* Rampe de phase assombrie pour tenir 4.5:1 sur le fond neumorphique : les
+     pastilles portent du texte de 10.5px, donc le seuil « texte », pas « bordure ».
+     Teintes conservées, luminosité seule ajustée. */
+  --p1:#345AF4; --p2:#097957; --p3:#9C5B00; --p4:#D01F1F; --pt:#5C6478;
+  --raise:6px 6px 13px var(--dark), -6px -6px 13px var(--light);
+  --raise-sm:3px 3px 7px var(--dark), -3px -3px 7px var(--light);
+  --inset:inset 4px 4px 9px var(--dark), inset -4px -4px 9px var(--light);
+  --inset-sm:inset 2px 2px 5px var(--dark), inset -2px -2px 5px var(--light);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#232732; --light:#2C313E; --dark:#171A22;
+    --card:#1B1F29; --ink:#E7EAF2; --ink-2:#98A1B5; --hair:#2E3442;
+    /* Sur fond sombre il faut éclaircir, pas assombrir. */
+    --p1:#6B87F7; --p2:#0CA678; --p3:#F08C00; --p4:#E86464; --pt:#98A1B5;
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--body); font-size:15px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{max-width:50rem;margin:0 auto;padding:26px 20px 20px;min-height:100%;display:flex;flex-direction:column}
+
+/* --- En-tête + rail ------------------------------------------------------ */
+header{margin-bottom:20px}
+h1{font-family:var(--display);font-size:1.15rem;font-weight:600;letter-spacing:-.015em;margin:0 0 4px}
+.sub{font-size:.8125rem;color:var(--ink-2);margin:0 0 18px;max-width:42rem}
+.rail{display:flex;gap:20px;flex-wrap:wrap;padding:14px 16px;border-radius:16px;box-shadow:var(--raise)}
+.grp{display:flex;flex-direction:column;gap:6px}
+.wks{display:flex;gap:5px}
+.wk{
+  font-family:var(--mono);font-size:10px;font-weight:500;line-height:1;
+  min-width:22px;text-align:center;padding:5px 6px;border-radius:7px;
+  color:var(--c);background:var(--bg);box-shadow:var(--raise-sm);
+  transition:box-shadow .18s ease,transform .18s ease;
+}
+.wk.on{box-shadow:var(--inset-sm);transform:translateY(1px);font-weight:700}
+.lbl{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+
+/* --- Fil de conversation -------------------------------------------------- */
+#thread{flex:1;display:flex;flex-direction:column;gap:18px;padding:22px 2px;overflow-y:auto}
+.msg{max-width:100%}
+.msg.user{align-self:flex-end;max-width:80%;background:var(--bg);box-shadow:var(--raise-sm);
+  border-radius:16px 16px 5px 16px;padding:11px 15px;font-size:.9375rem}
+/* Surface de lecture : plate, contrastée, sans ombre. */
+.msg.bot{background:var(--card);border:1px solid var(--hair);border-radius:5px 16px 16px 16px;
+  padding:16px 19px;box-shadow:0 1px 2px rgba(20,25,40,.05)}
+.msg.bot p{margin:0 0 .7em}
+.msg.bot p:last-child{margin-bottom:0}
+.msg.bot ul,.msg.bot ol{margin:.4em 0 .8em;padding-left:1.3em}
+.msg.bot li{margin:.22em 0}
+.msg.bot code{font-family:var(--mono);font-size:.86em;background:rgba(124,134,158,.14);
+  padding:1px 5px;border-radius:5px}
+.msg.bot pre{background:rgba(124,134,158,.12);padding:11px 13px;border-radius:10px;overflow-x:auto}
+.msg.bot pre code{background:none;padding:0}
+.msg.bot h3{font-family:var(--display);font-size:1rem;margin:.9em 0 .35em}
+.msg.bot strong{font-weight:600}
+
+.tool{font-family:var(--mono);font-size:11px;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--p2);animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+.srcs{margin-top:14px;padding-top:11px;border-top:1px solid var(--hair);display:flex;
+  align-items:center;gap:7px;flex-wrap:wrap}
+.srcs .cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.chip{font-family:var(--mono);font-size:10.5px;font-weight:500;padding:3px 9px;border-radius:999px;
+  color:var(--c);background:var(--bg);box-shadow:var(--inset-sm)}
+
+/* --- Vide ----------------------------------------------------------------- */
+.empty{margin:auto;text-align:center;padding:30px 16px}
+.empty h2{font-family:var(--display);font-size:1.05rem;font-weight:600;margin:0 0 6px}
+.empty p{color:var(--ink-2);font-size:.875rem;margin:0 0 20px}
+.egs{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:34rem}
+.eg{font-size:.8125rem;color:var(--ink);background:var(--bg);border:0;cursor:pointer;
+  padding:9px 14px;border-radius:11px;box-shadow:var(--raise-sm);font-family:var(--body);
+  transition:box-shadow .16s ease}
+.eg:hover{box-shadow:var(--inset-sm)}
+.eg:active{box-shadow:var(--inset)}
+
+/* --- Composeur ------------------------------------------------------------ */
+form{display:flex;gap:11px;align-items:flex-end;padding:11px;border-radius:19px;box-shadow:var(--raise);
+  position:sticky;bottom:12px;background:var(--bg)}
+textarea{flex:1;resize:none;border:0;outline:0;background:var(--bg);color:var(--ink);
+  font-family:var(--body);font-size:.9375rem;line-height:1.55;padding:11px 14px;border-radius:13px;
+  box-shadow:var(--inset);max-height:150px}
+textarea::placeholder{color:var(--ink-2)}
+button.send{border:0;cursor:pointer;background:var(--bg);color:var(--ink);width:42px;height:42px;
+  border-radius:13px;box-shadow:var(--raise-sm);font-size:17px;flex-shrink:0;
+  display:grid;place-items:center;transition:box-shadow .16s ease}
+button.send:hover:not(:disabled){box-shadow:var(--inset-sm)}
+button.send:disabled{opacity:.4;cursor:not-allowed}
+
+/* --- Accessibilité -------------------------------------------------------- */
+:focus-visible{outline:2px solid var(--p1);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:640px){.shell{padding:16px 13px}.rail{gap:13px}.msg.user{max-width:92%}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <h1>AI Roadmap Assistant</h1>
+    <p class="sub">Interroge tes propres mémos de la formation AI Engineering. Les réponses
+      viennent de tes notes, jamais des connaissances générales du modèle.</p>
+    <div class="rail" id="rail" aria-label="Semaines de la formation"></div>
+  </header>
+
+  <div id="thread" aria-live="polite"></div>
+
+  <form id="composer">
+    <label for="q" class="sr" hidden>Question</label>
+    <textarea id="q" rows="1" placeholder="Pose une question sur tes mémos…"></textarea>
+    <button class="send" id="send" type="submit" aria-label="Envoyer">↑</button>
+  </form>
+</div>
+
+<script>
+const PHASES=[["Fondations",1,2,"var(--p1)"],["Données & RAG",3,5,"var(--p2)"],
+              ["Agents",6,6,"var(--p3)"],["Production",7,8,"var(--p4)"]];
+const COLOR={};PHASES.forEach(([,a,b,c])=>{for(let w=a;w<=b;w++)COLOR[w]=c});
+
+const rail=document.getElementById("rail");
+rail.innerHTML=PHASES.map(([label,a,b,c])=>{
+  let t="";for(let w=a;w<=b;w++)t+=`<span class="wk" data-w="${w}" style="--c:${c}">${w}</span>`;
+  return `<span class="grp"><span class="wks">${t}</span><span class="lbl">${label}</span></span>`;
+}).join("");
+
+// Un identifiant par navigateur : c'est lui qui devient le thread LangGraph,
+// donc deux visiteurs ne partagent jamais leur mémoire de conversation.
+let sid=localStorage.getItem("sid");
+if(!sid){sid=crypto.randomUUID();localStorage.setItem("sid",sid)}
+
+const thread=document.getElementById("thread"),form=document.getElementById("composer"),
+      q=document.getElementById("q"),send=document.getElementById("send");
+const history=[];
+
+const EGS=["Différence entre bi-encoder et cross-encoder ?","Comment fonctionne un StateGraph LangGraph ?",
+           "Quelles stratégies de chunking pour un RAG ?","Comment tracer un LLM avec Langfuse ?"];
+function empty(){
+  thread.innerHTML=`<div class="empty"><h2>Tes mémos, indexés.</h2>
+    <p>Demande une notion précise — la réponse indiquera de quels mémos elle vient.</p>
+    <div class="egs">${EGS.map(e=>`<button class="eg">${e}</button>`).join("")}</div></div>`;
+  thread.querySelectorAll(".eg").forEach(b=>b.onclick=()=>{q.value=b.textContent;ask()});
+}
+empty();
+
+/* Markdown minimal, écrit ici plutôt que tiré d'un CDN : l'image doit tourner
+   sans réseau, et un Space applique une CSP stricte. */
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+function md(src){
+  const blocks=esc(src).split(/\n{2,}/).map(b=>{
+    b=b.trim();if(!b)return"";
+    if(/^```/.test(b))return `<pre><code>${b.replace(/^```\w*\n?|```$/g,"")}</code></pre>`;
+    if(/^#{1,6}\s/.test(b))return `<h3>${b.replace(/^#{1,6}\s/,"")}</h3>`;
+    const inline=t=>t.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+                     .replace(/`([^`]+)`/g,"<code>$1</code>");
+    if(/^\s*[-*]\s/.test(b))
+      return `<ul>${b.split("\n").map(l=>l.replace(/^\s*[-*]\s?/,"")).filter(Boolean)
+              .map(l=>`<li>${inline(l)}</li>`).join("")}</ul>`;
+    if(/^\s*\d+[.)]\s/.test(b))
+      return `<ol>${b.split("\n").map(l=>l.replace(/^\s*\d+[.)]\s?/,"")).filter(Boolean)
+              .map(l=>`<li>${inline(l)}</li>`).join("")}</ol>`;
+    return `<p>${inline(b).replace(/\n/g,"<br>")}</p>`;
+  });
+  return blocks.join("");
+}
+
+function setRail(weeks){
+  rail.querySelectorAll(".wk").forEach(el=>
+    el.classList.toggle("on",weeks.includes(+el.dataset.w)));
+}
+function chips(weeks,transverse){
+  if(!weeks.length&&!transverse)return"";
+  const c=weeks.map(w=>`<span class="chip" style="--c:${COLOR[w]}">S${w}</span>`).join("");
+  const t=transverse?`<span class="chip" style="--c:var(--pt)">Transverse</span>`:"";
+  return `<div class="srcs"><span class="cap">Sources</span>${c}${t}</div>`;
+}
+const scroll=()=>thread.scrollTop=thread.scrollHeight;
+
+async function ask(){
+  const text=q.value.trim();if(!text)return;
+  if(thread.querySelector(".empty"))thread.innerHTML="";
+  q.value="";q.style.height="auto";send.disabled=true;setRail([]);
+
+  const u=document.createElement("div");u.className="msg user";u.textContent=text;
+  thread.appendChild(u);
+  const bot=document.createElement("div");bot.className="msg bot";
+  bot.innerHTML=`<div class="tool"><span class="dot"></span>Consultation de tes mémos…</div>`;
+  thread.appendChild(bot);scroll();
+
+  let answer="";
+  try{
+    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:text,session_id:sid,history})});
+    const reader=res.body.getReader(),dec=new TextDecoder();let buf="";
+    while(true){
+      const{done,value}=await reader.read();if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const parts=buf.split("\n\n");buf=parts.pop();
+      for(const p of parts){
+        if(!p.startsWith("data: "))continue;
+        const ev=JSON.parse(p.slice(6));
+        if(ev.type==="tool"){setRail(ev.weeks);}
+        else if(ev.type==="message"){answer=ev.content;bot.innerHTML=md(answer);scroll();}
+        else if(ev.type==="blocked"||ev.type==="error"){answer=ev.content;bot.innerHTML=md(answer);}
+        else if(ev.type==="done"){
+          setRail(ev.weeks);
+          bot.innerHTML=md(answer)+chips(ev.weeks,ev.transverse);
+        }
+      }
+    }
+  }catch(e){bot.innerHTML=md("La connexion au serveur a été interrompue. Réessaie.");}
+
+  history.push({role:"user",content:text},{role:"assistant",content:answer});
+  send.disabled=false;q.focus();scroll();
+}
+
+form.onsubmit=e=>{e.preventDefault();ask()};
+q.addEventListener("input",()=>{q.style.height="auto";q.style.height=Math.min(q.scrollHeight,150)+"px"});
+q.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();ask()}});
+</script>
+</body>
+</html>

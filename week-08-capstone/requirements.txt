@@ -22,8 +22,8 @@ rank_bm25          # recherche hybride BM25 + dense (RRF), brique de la Semaine 
 # Observability
 langfuse
 
-# UI
-gradio
+# UI — front statique servi par FastAPI (plus de Gradio : son DOM lui
+# appartient, impossible d'y tenir un habillage neumorphique précis)
 
 # Utils
 python-dotenv

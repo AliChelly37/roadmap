@@ -19,7 +19,7 @@ depuis les connaissances générales du modèle.
 
 | Couche | Choix |
 |---|---|
-| UI | Gradio (`gr.ChatInterface`, streaming) |
+| UI | Front statique + SSE, servi par FastAPI |
 | Orchestration | LangGraph (agent ReAct avec outil) |
 | Recherche | ChromaDB (dense) + BM25 (lexical), fusion RRF |
 | Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` |
@@ -36,6 +36,30 @@ provient réellement.
 
 Le corpus est **indexé au build**, pas au démarrage : le conteneur démarre à froid
 sans réencoder quoi que ce soit.
+
+## Pourquoi pas Gradio
+
+Le capstone tournait d'abord sur `gr.ChatInterface`. En Gradio 6, `theme` et `css`
+ont quitté le constructeur pour `launch()`, `ChatInterface` n'accepte plus de CSS du
+tout, et le DOM reste celui du framework. Or l'habillage retenu — neumorphisme —
+repose sur le contrôle du fond **et des deux ombres** de chaque surface : c'est
+exactement ce qu'un framework qui possède son markup ne permet pas de tenir.
+
+Le remplacement réutilise des briques déjà écrites pendant la formation : le
+streaming SSE de la **Semaine 6** (`week-06-agent/server.py`) et le front statique
+écrit à la main des **Semaines 2 à 4**. `fastapi` et `uvicorn` étaient déjà dans les
+dépendances ; `gradio` en est sorti.
+
+## Parti pris visuel
+
+Neumorphisme sur le **chrome** — rail, composeur, boutons, pastilles — et surface de
+lecture **plate et contrastée** pour les réponses. Le neumorphisme pur encode l'état
+par des ombres douces sur un fond de même couleur : il tombe sous les seuils WCAG
+(4.5:1 pour le texte, 3:1 pour les bordures) et fatigue à la lecture d'un paragraphe.
+La douceur va donc sur ce qu'on manipule, la netteté sur ce qu'on lit.
+
+Le rail s'allume : les semaines réellement consultées passent en creux (`inset`)
+pendant que la réponse s'écrit.
 
 ## Recherche hybride
 
@@ -63,6 +87,7 @@ Mesure sur le jeu d'éval (`test_retrieval.py`, 12 questions couvrant les 8 sema
 ```bash
 pip install -r requirements.txt
 python app.py                 # http://localhost:7860
+# ou : uvicorn app:app --port 7860
 ```
 
 Renseigner les clés API dans un `.env` à la racine du dépôt (jamais commité).
@@ -94,8 +119,14 @@ est cuit dans l'image.
 ## Tests
 
 ```bash
-python test_retrieval.py      # éval de retrieval, exit 1 si régression
+python test_retrieval.py      # éval de retrieval, exit 1 si régression (lancé au build)
+python test_sse.py            # smoke test bout en bout, serveur démarré
 ```
+
+`test_sse.py` vérifie les quatre garanties qui ne doivent pas régresser : l'outil est
+appelé et la provenance remonte, un mémo transverse ressort sans semaine, une injection
+est bloquée **avant** tout appel au LLM, et une question légitime contenant
+« system prompt » passe.
 
 Le jeu d'éval contient volontairement les requêtes **reformulées par l'agent**
 (« reranking cross-encoder semaine 5 formation »), pas seulement des questions bien
@@ -125,7 +156,6 @@ Secrets à déclarer dans *Settings → Secrets* (injectés comme variables d'en
 au runtime) : `OPENROUTER_API_KEY`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`,
 `LANGFUSE_HOST`.
 
-Pour repasser sur un Space Gradio natif (sans Docker), remplacer le frontmatter par
-`sdk: gradio` / `app_file: app.py` et retirer `app_port` — HF installe alors
-`requirements.txt` et lance `app.py`. L'index est reconstruit au premier démarrage
-(~1–2 min), le `Dockerfile` restant utilisable en local.
+Le repli « Space Gradio natif » n'existe plus depuis l'abandon de Gradio : l'app est
+un service FastAPI, donc **Docker est le seul SDK possible**. C'est un choix assumé —
+il fallait trancher entre un habillage sur mesure et le mode gratuit le plus simple.

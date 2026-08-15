@@ -94,6 +94,41 @@ déploiement CPU. Installer d'abord la roue CPU (191 Mo) les élimine entièreme
 **Vérification finale, contre le conteneur** (pas le code local) : question réelle →
 réponse ancrée citant les bons outils ; tentative d'injection → bloquée par le garde-fou.
 
+## Abandonner Gradio, et pourquoi c'était le bon arbitrage
+
+La première version tournait sur `gr.ChatInterface`. En Gradio 6, `theme` et `css` ont
+quitté le constructeur pour `launch()` — une bascule silencieuse : le thème était
+simplement ignoré, la config servie affichait `theme: default, css len: 0` alors que le
+code semblait correct. `ChatInterface` n'accepte plus de CSS du tout, et le DOM
+appartient au framework.
+
+Ça tenait tant que l'habillage restait sobre. Le neumorphisme, lui, repose sur le
+contrôle du fond **et des deux ombres** de chaque surface : impossible à garantir sur
+des classes générées qu'une version mineure peut renommer.
+
+Le coût réel était faible parce que les briques existaient déjà :
+
+| Besoin | Brique réutilisée |
+|---|---|
+| Streaming de l'agent | SSE de la **Semaine 6** (`week-06-agent/server.py`) |
+| Front écrit à la main | `index.html` des **Semaines 2 à 4** |
+| Serveur | `fastapi` + `uvicorn`, déjà dans `requirements.txt` |
+
+Le capstone est ainsi devenu un assemblage de mes propres semaines plutôt qu'une démo
+de framework — et `gradio` est sorti de l'image.
+
+## Un parti pris visuel qui devait céder sur un point
+
+Neumorphisme demandé. Le neumorphisme encode l'état par des ombres douces sur un fond
+de **même couleur** que l'élément : structurellement peu contrasté, il tombe sous les
+seuils WCAG (4.5:1 texte, 3:1 bordures).
+
+Arbitrage retenu : **neumorphisme sur le chrome** (rail, composeur, boutons, pastilles)
+et **surface de lecture plate et contrastée** pour les réponses. La douceur va sur ce
+qu'on manipule, la netteté sur ce qu'on lit. Le rail s'allume pendant la réponse : les
+semaines réellement consultées passent en creux — l'effet neumorphique sert alors à
+afficher un état réel, pas à décorer.
+
 ## Garde-fous en place
 
 - Détection d'injection à l'entrée (OWASP LLM01), par motifs FR/EN, 6/6 sur le jeu de test

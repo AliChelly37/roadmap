@@ -45,4 +45,7 @@ RUN python test_retrieval.py
 EXPOSE 7860
 ENV PORT=7860
 
-CMD ["python", "app.py"]
+# uvicorn en direct : app.py n'est plus qu'un module FastAPI depuis l'abandon
+# de Gradio. Un seul worker — l'index et le modèle d'embeddings sont chargés
+# en mémoire une fois, les dupliquer coûterait ~500 Mo par worker.
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860", "--workers", "1"]
